@@ -1,8 +1,14 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import { NavLink } from 'react-router-dom';
 import app from '../data/app';
 import { basePaths, loginPaths } from '../data/paths';
+import Customer from '../data/type/Customer';
 
 export default function Head() {
+	const storageCustomer: string | null = localStorage.getItem('user');
+	const customer: Customer | null =
+		storageCustomer == null ? null : JSON.parse(storageCustomer);
+
 	return (
 		<div className='container'>
 			<header className='d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom'>
@@ -25,19 +31,23 @@ export default function Head() {
 				</ul>
 
 				<div className='col-md-3 text-end'>
-					{loginPaths.map(path => (
-						<NavLink
-							key={path.id}
-							to={path.path}
-							className={
-								loginPaths[loginPaths.length - 1] === path
-									? 'btn btn-primary me-2'
-									: 'btn btn-outline-primary me-2'
-							}
-						>
-							{path.name}
-						</NavLink>
-					))}
+					{customer !== null ? (
+						<NavLink to='/account'>{customer.username}</NavLink>
+					) : (
+						loginPaths.map(path => (
+							<NavLink
+								key={path.id}
+								to={path.path}
+								className={
+									loginPaths[loginPaths.length - 1] === path
+										? 'btn btn-primary me-2'
+										: 'btn btn-outline-primary me-2'
+								}
+							>
+								{path.name}
+							</NavLink>
+						))
+					)}
 				</div>
 			</header>
 		</div>

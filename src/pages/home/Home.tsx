@@ -1,26 +1,26 @@
 import { useState } from 'react';
+import ArticlesMapper from '../../components/ArticlesMapper';
 import Footer from '../../components/Footer';
 import Head from '../../components/Head';
 import Article from '../../data/type/Article';
 import useService from '../../hooks/useService';
 import ArticleService from '../../services/ArticleService';
 import Description from './Description';
-import LatesPosts from './LatestArticles';
 
 export default function Home() {
 	const service: ArticleService = new ArticleService();
 	const [articles, setArticles] = useState<Article[] | null>(null);
 
-	useService<Article[] | null>(() => {
-		return service.getLastWithLimit(3);
-	}, setArticles);
+	useService<Article[] | null>(service.getLastWithLimit(3), articles =>
+		setArticles(articles)
+	);
 
 	return (
 		<main>
 			<Head />
 
 			<Description />
-			<LatesPosts articles={articles} />
+			<ArticlesMapper articles={articles} heading='Последние статьи' />
 
 			<Footer />
 		</main>

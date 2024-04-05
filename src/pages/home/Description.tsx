@@ -13,14 +13,14 @@ export default function Description() {
 					</p>
 					<p>
 						<NavLink
-							to='/posts'
+							to='/articles'
 							className='btn btn-primary my-2'
 							style={{ marginRight: '10px' }}
 						>
-							Посты
+							Статьи
 						</NavLink>
 						<NavLink to='/login' className='btn btn-secondary my-2'>
-							Создать пост
+							Написать статью
 						</NavLink>
 					</p>
 				</div>

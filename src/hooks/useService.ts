@@ -1,18 +1,25 @@
 import { AxiosResponse } from 'axios';
-import { Dispatch, SetStateAction, useEffect } from 'react';
+import { useEffect } from 'react';
 
 export default function useService<T>(
-	fn: () => Promise<AxiosResponse<T, unknown>>,
-	setHook: Dispatch<SetStateAction<T | null>>
+	fn: Promise<AxiosResponse<T, unknown>> | undefined,
+	callBack: (datum: T) => void
 ): void {
-	useEffect(() => {
-		const getResponse = (): Promise<T> =>
-			fn().then(response => response.data);
+	useEffect(
+		() => {
+			if (typeof fn === 'undefined') {
+				return;
+			}
 
-		const unwrapPromise = async (): Promise<void> => {
-			setHook(await getResponse());
-		};
+			const getResponse = (): Promise<T> =>
+				fn.then(response => response.data);
 
-		unwrapPromise();
-	});
+			const unwrapPromise = async (): Promise<void> => {
+				callBack(await getResponse());
+			};
+
+			unwrapPromise();
+		},
+		[] /* DO NOT REMOVE EMPTY ARRAY OR GET INFINITY LOOP OF REQUESTS*/
+	);
 }

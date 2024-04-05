@@ -6,7 +6,7 @@ interface Paths {
 
 const basePaths: Paths[] = [
 	{ id: 1, path: '/', name: 'Главная' },
-	{ id: 2, path: '/posts', name: 'Посты' },
+	{ id: 2, path: '/articles', name: 'Статьи' },
 	{ id: 3, path: '/about', name: 'О нас' },
 ];
 

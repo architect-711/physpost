@@ -1,10 +1,10 @@
-import Article from '../../data/type/Article';
+import Article from '../data/type/Article';
 
 export default function ArticleItem({ article }: { article: Article }) {
 	return (
 		<div className='col'>
 			<div className='card shadow-sm'>
-				<svg
+				{/* <svg
 					className='bd-placeholder-img card-img-top'
 					width='100%'
 					height='225'
@@ -19,7 +19,7 @@ export default function ArticleItem({ article }: { article: Article }) {
 					<text x='50%' y='50%' fill='#eceeef' dy='.3em'>
 						No content
 					</text>
-				</svg>
+				</svg> */}
 				<div className='card-body'>
 					<h2 className='mb-4'>{article.title}</h2>
 
