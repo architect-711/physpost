@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction } from 'react';
 import FroalaEditor from 'react-froala-wysiwyg';
 import froalaConfig from '../../../data/config/froalaConfig';
 import { CreationArticle } from '../../../data/typing';
+import FilesSaver from './filesSrcChanger';
 
 const ArticleCreation = ({
 	article,
@@ -15,7 +16,11 @@ const ArticleCreation = ({
 	setArticle: Dispatch<SetStateAction<CreationArticle>>;
 	onSave: (newArticle: CreationArticle) => void;
 }) => {
+	const filesSaver = new FilesSaver();
+
 	const insertContent = (): void => {
+		filesSaver.saveFiles();
+
 		const froalaEditor: Element | null = document.querySelector(
 			'.fr-element.fr-view'
 		);
@@ -37,6 +42,7 @@ const ArticleCreation = ({
 					className='form-control'
 					id='floatingInput'
 					placeholder='Название'
+					value={article.title}
 					autoFocus
 					onChange={event =>
 						setArticle({ ...article, title: event.target.value })
@@ -45,12 +51,14 @@ const ArticleCreation = ({
 
 				<label htmlFor='floatingInput'>Создать статью</label>
 			</div>
+			<img />
 
 			<div className='form-floating'>
 				<textarea
 					className='form-control'
 					placeholder='Описание'
 					id='floatingTextarea'
+					value={article.description}
 					onChange={event =>
 						setArticle({
 							...article,
