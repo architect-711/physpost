@@ -1,4 +1,4 @@
-import Customer from '../../data/type/Customer';
+import { Customer } from '../../data/typing';
 
 const AccountInfo = () => {
 	const customer: Customer = JSON.parse(localStorage.getItem('user')!);

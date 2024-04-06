@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 import customerAPIConfig from '../data/config/customerAPIConfig';
-import Customer from '../data/type/Customer';
+import { Customer } from '../data/typing';
 import request from '../lib/request';
 
 export default class CustomerService {

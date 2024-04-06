@@ -1,35 +1,34 @@
 import { AxiosResponse } from 'axios';
 import articleApiConfig from '../data/config/articlesApiConfig';
-import API from '../data/type/API';
-import Article from '../data/type/Article';
+import { Article, ArticleApiEndpoints, CreationArticle } from '../data/typing';
 import request from '../lib/request';
 
-export default class ArticleService {
-	private readonly endpoints: API = articleApiConfig;
+type Response<T> = Promise<AxiosResponse<T>>;
 
-	public async getLastWithLimit(
-		limit: number
-	): Promise<AxiosResponse<Article[], unknown>> {
+export default class ArticleService {
+	private readonly root: string = articleApiConfig.rootURL;
+	private readonly endpoints: ArticleApiEndpoints =
+		articleApiConfig.endpoints;
+
+	public async getLastWithLimit(limit: number): Response<Article[]> {
 		return request<Article[]>(
 			'GET',
-			this.endpoints.rootURL +
-				this.endpoints.endpoints.getLastWithLimit +
-				limit,
-			null,
-			''
+			this.root + this.endpoints.getLastWithLimit + limit
 		);
 	}
 
-	public async getArticlesWithTitleMatch(
-		title: string
-	): Promise<AxiosResponse<Article[], unknown>> {
+	public async getArticlesWithTitleMatch(title: string): Response<Article[]> {
 		return request(
 			'GET',
-			this.endpoints.rootURL +
-				this.endpoints.endpoints.getArticlesWithTitleMatch +
-				title,
-			null,
-			''
+			this.root + this.endpoints.getArticlesWithTitleMatch + title
 		);
+	}
+
+	public async postArticle(article: CreationArticle): Response<Article> {
+		return request('POST', this.root + this.endpoints.post, article);
+	}
+
+	public async getArticleById(id: number): Response<Article> {
+		return request('GET', this.root + this.endpoints.getById + id);
 	}
 }

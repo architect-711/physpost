@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
-import Customer from '../data/type/Customer';
+import { useNavigate } from 'react-router-dom';
+import { Customer } from '../data/typing';
 import CustomerService from '../services/CustomerService';
 import customerChecker from '../utils/customerChecker';
 
@@ -46,10 +46,11 @@ export default function Login() {
 
 		const response: AxiosResponse<Customer, unknown> = await service
 			.login(form.username, form.password)
-			.then(response => response);
+			.then(response => response)
+			.catch(error => alert('Ошибка входа\nПричина: ' + error.message));
 
 		if (response.status !== 200) {
-			return console.error('Login failure');
+			return alert('Login failure');
 		}
 
 		localStorage.setItem('user', JSON.stringify(response.data));
@@ -94,7 +95,7 @@ export default function Login() {
 				>
 					Войти
 				</button>
-				<p className='mt-5 mb-3 text-body-secondary'>© 2017–2024</p>
+				<p className='mt-5 mb-3 text-body-secondary'>© 2024</p>
 			</form>
 		</main>
 	);

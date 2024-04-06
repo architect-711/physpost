@@ -1,6 +1,9 @@
-import Article from '../data/type/Article';
+import { useNavigate } from 'react-router-dom';
+import { Article } from '../data/typing';
 
 export default function ArticleItem({ article }: { article: Article }) {
+	const navigate = useNavigate();
+
 	return (
 		<div className='col'>
 			<div className='card shadow-sm'>
@@ -29,6 +32,9 @@ export default function ArticleItem({ article }: { article: Article }) {
 							<button
 								type='button'
 								className='btn btn-sm btn-outline-secondary'
+								onClick={() =>
+									navigate('/article/' + article.id)
+								}
 							>
 								Читать
 							</button>

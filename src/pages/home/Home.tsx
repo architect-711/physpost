@@ -2,7 +2,7 @@ import { useState } from 'react';
 import ArticlesMapper from '../../components/ArticlesMapper';
 import Footer from '../../components/Footer';
 import Head from '../../components/Head';
-import Article from '../../data/type/Article';
+import { Article } from '../../data/typing';
 import useService from '../../hooks/useService';
 import ArticleService from '../../services/ArticleService';
 import Description from './Description';

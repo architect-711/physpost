@@ -2,7 +2,7 @@
 import { NavLink } from 'react-router-dom';
 import app from '../data/app';
 import { basePaths, loginPaths } from '../data/paths';
-import Customer from '../data/type/Customer';
+import { Customer } from '../data/typing';
 
 export default function Head() {
 	const storageCustomer: string | null = localStorage.getItem('user');

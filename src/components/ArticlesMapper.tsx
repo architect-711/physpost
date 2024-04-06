@@ -1,4 +1,4 @@
-import Article from '../data/type/Article';
+import { Article } from '../data/typing';
 import ArticleItem from './ArticleItem';
 
 export default function ArticlesMapper({
@@ -13,9 +13,20 @@ export default function ArticlesMapper({
 			<div className='container'>
 				{heading && <h1 className='mb-4'>{heading}</h1>}
 
-				<div className='row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3'>
+				<div className='row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 justify-content-center'>
 					{articles == null ? (
-						<h5>Нет статей</h5>
+						<button
+							className='btn btn-primary'
+							style={{ width: '10%' }}
+							type='button'
+							disabled={true}
+						>
+							<span
+								className='spinner-border spinner-border-sm'
+								aria-hidden='true'
+							></span>
+							<span role='status'>Загрузка...</span>
+						</button>
 					) : (
 						articles.map(article => (
 							<ArticleItem article={article} key={article.id} />

@@ -2,12 +2,12 @@ import { AxiosResponse } from 'axios';
 import { useEffect } from 'react';
 
 export default function useService<T>(
-	fn: Promise<AxiosResponse<T, unknown>> | undefined,
+	fn: Promise<AxiosResponse<T, unknown>>,
 	callBack: (datum: T) => void
 ): void {
 	useEffect(
 		() => {
-			if (typeof fn === 'undefined') {
+			if (typeof fn === 'undefined' || fn === null) {
 				return;
 			}
 

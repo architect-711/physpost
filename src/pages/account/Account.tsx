@@ -1,10 +1,12 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Head from '../../components/Head';
+import { Customer } from '../../data/typing';
 import customerChecker from '../../utils/customerChecker';
 import AccountInfo from './AccountInfo';
 import DeleteAccount from './DeleteAccount';
+import AccountArticles from './creation/AccountArticles';
 
 interface Mode {
 	id: number;
@@ -15,14 +17,24 @@ interface Mode {
 
 export default function Account() {
 	const navigate = useNavigate();
+	const storageCustomer: string | null = localStorage.getItem('user');
+	const customer: Customer | null =
+		storageCustomer !== null ? JSON.parse(storageCustomer) : null;
 
-	if (!customerChecker()) {
-		navigate('/login');
-	}
+	useEffect(() => {
+		if (!customerChecker() || customer == null) {
+			navigate('/login');
+		}
+	}, [customer]);
 
 	const [modes, setModes] = useState<Mode[]>([
 		{ id: 1, title: 'Аккаунт', isActive: true, component: <AccountInfo /> },
-		{ id: 2, title: 'Статьи', isActive: false, component: <p>articles</p> },
+		{
+			id: 2,
+			title: 'Статьи',
+			isActive: false,
+			component: <AccountArticles />,
+		},
 		{
 			id: 3,
 			title: 'Удалить',

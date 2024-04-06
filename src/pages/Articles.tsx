@@ -2,7 +2,7 @@ import { useState } from 'react';
 import ArticlesMapper from '../components/ArticlesMapper';
 import Footer from '../components/Footer';
 import Head from '../components/Head';
-import Article from '../data/type/Article';
+import { Article } from '../data/typing';
 import useService from '../hooks/useService';
 import ArticleService from '../services/ArticleService';
 
@@ -30,7 +30,7 @@ export default function Articles() {
 			<div className='container'>
 				<section className='search d-flex justify-content-between pb-4'>
 					<input
-						placeholder='Find article by title'
+						placeholder='Найти статью по названию'
 						className='form-control'
 						onChange={event => setInputValue(event.target.value)}
 						style={{ width: '70%' }}
@@ -39,7 +39,7 @@ export default function Articles() {
 						className='w-25 btn btn-primary btn-lg'
 						onClick={findByTitle}
 					>
-						Find
+						Найти
 					</button>
 				</section>
 			</div>

@@ -1,6 +1,6 @@
-import API from '../type/API';
+import { API, ArticleApiEndpoints } from '../typing';
 
-const articleApiConfig: API = {
+const articleApiConfig: API<ArticleApiEndpoints> = {
 	rootURL: 'http://localhost:8081/v1/articles',
 	endpoints: {
 		getById: '/get/',
