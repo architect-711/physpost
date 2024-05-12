@@ -1,5 +1,5 @@
 const app = {
-	title: 'Physpost.com',
+    title: "Physpost.com",
 };
 
 export default app;
