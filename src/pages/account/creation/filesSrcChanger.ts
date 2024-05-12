@@ -60,8 +60,9 @@ export default class FilesSaver {
     private makePayload(file: Blob, name: string): FormData {
         const formData = new FormData();
 
-        formData.append("articleId", 1);
-        formData.append("authorId", 1);
+        // there were just numbers before, can't make build if error so I change to strings
+        formData.append("articleId", "1");
+        formData.append("authorId", "1");
         formData.append("name", name);
         formData.append("file", file);
 
