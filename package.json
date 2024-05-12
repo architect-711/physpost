@@ -1,6 +1,5 @@
 {
     "name": "test-frontend",
-    "homepage": "https://architect-711.github.io/physpost.com_frontend",
     "private": true,
     "version": "0.0.0",
     "type": "module",
