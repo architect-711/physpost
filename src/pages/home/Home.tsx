@@ -1,18 +1,23 @@
 import { useState } from "react";
-import ArticlesMapper from "../../components/ArticlesMapper";
-import Footer from "../../components/Footer";
-import Head from "../../components/Head";
-import { Article } from "../../data/typing";
-import useService from "../../hooks/useService";
+import { ArticlesFallback } from "../../components/article/ArticlesFallback";
+import Footer from "../../components/common/Footer";
+import Head from "../../components/common/Head";
+import { Article, CustomError } from "../../data/typing";
+import { useServiceEffect } from "../../hooks/useService";
 import ArticleService from "../../services/ArticleService";
 import Description from "./Description";
 
 export default function Home() {
-    const service: ArticleService = new ArticleService();
+    const [error, setError] = useState<CustomError>({
+        isError: false,
+        message: "",
+    });
     const [articles, setArticles] = useState<Article[] | null>(null);
 
-    useService<Article[] | null>(service.getLastWithLimit(3), (articles) =>
-        setArticles(articles)
+    useServiceEffect<Article[]>(
+        ArticleService.getLastWithLimit(9),
+        (response) => setArticles(response.data),
+        (error) => setError({ isError: true, message: error.message })
     );
 
     return (
@@ -20,7 +25,10 @@ export default function Home() {
             <Head />
 
             <Description />
-            <ArticlesMapper articles={articles} heading="Последние статьи" />
+            <ArticlesFallback
+                error={error}
+                articles={{ articles, heading: "Последние статьи" }}
+            />
 
             <Footer />
         </main>

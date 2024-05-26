@@ -11,8 +11,6 @@ const defaultArticleConfig: CreationArticle = {
 };
 
 export default function AccountArticles() {
-    const service = new ArticleService();
-
     const [article, setArticle] =
         useState<CreationArticle>(defaultArticleConfig);
 
@@ -26,10 +24,8 @@ export default function AccountArticles() {
             return alert("Ошибка заполнения статьи");
         }
 
-        service
-            .postArticle(newArticle)
+        ArticleService.postArticle(newArticle)
             .then((response) => {
-                console.log(response.data);
                 alert("Статья создана.");
                 setArticle(defaultArticleConfig);
             })

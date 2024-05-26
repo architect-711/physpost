@@ -12,7 +12,7 @@ const basePaths: Paths[] = [
 
 const loginPaths: Paths[] = [
     { id: 1, path: "/login", name: "Вход" },
-    { id: 2, path: "/login", name: "Регистрация" },
+    // { id: 2, path: "/login", name: "Регистрация" },
 ];
 
 export { basePaths, loginPaths };

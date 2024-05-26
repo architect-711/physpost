@@ -1,12 +1,7 @@
-const FILES_SAVE_URL = "http://localhost:8080/v1/files/post";
-const FILE_GET_PATH = "http://localhost:8080/v1/files/get";
-interface File {
-    id: number;
-    articleId: number;
-    authorId: number;
-    name: string;
-    content: string;
-}
+import { File } from "../../../data/typing";
+
+const FILES_SAVE_URL = "http://localhost:8080/v1/api/file/post/save_one";
+const FILE_GET_PATH = "http://localhost:8080/v1/api/file/get";
 
 export default class FilesSaver {
     private readonly host: string = "blob:http://localhost:5173";

@@ -1,4 +1,4 @@
-import { Article } from "../data/typing";
+import { Article } from "../../data/typing";
 import ArticleItem from "./ArticleItem";
 
 export default function ArticlesMapper({

@@ -1,12 +1,11 @@
-/* eslint-disable no-mixed-spaces-and-tabs */
 import { NavLink } from "react-router-dom";
-import app from "../data/app";
-import { basePaths, loginPaths } from "../data/paths";
-import { Customer } from "../data/typing";
+import { app } from "../../data/app";
+import { basePaths, loginPaths } from "../../data/paths";
+import { Person } from "../../data/typing";
 
-export default function Head() {
+const Head = () => {
     const storageCustomer: string | null = localStorage.getItem("user");
-    const customer: Customer | null =
+    const customer: Person | null =
         storageCustomer == null ? null : JSON.parse(storageCustomer);
 
     return (
@@ -52,4 +51,6 @@ export default function Head() {
             </header>
         </div>
     );
-}
+};
+
+export default Head;

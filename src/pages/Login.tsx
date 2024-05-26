@@ -1,88 +1,82 @@
-import { AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Customer } from "../data/typing";
-import CustomerService from "../services/CustomerService";
-import customerChecker from "../utils/customerChecker";
+import { ChangeEvent, useEffect, useState } from "react";
+import { Form, NavLink, useNavigate } from "react-router-dom";
+import UIInput from "../components/ui/input/UIInput.module";
+import PersonService from "../services/PersonService";
+import { enforceLoginFormToCenter } from "../utils/enforceLoginFormToCenter";
+import { checkPerson } from "../utils/personChecker";
+
+interface Form {
+    username: string;
+    password: string;
+}
 
 export default function Login() {
+    const [isError, setIsError] = useState<boolean>(false);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if (customerChecker()) {
-            navigate("/account");
-        }
-
-        // force bootstrap center form
-        const centeringClass =
-            "d-flex align-items-center py-4 bg-body-tertiary justify-content-center";
-
-        centeringClass
-            .split(" ")
-            .forEach((classPart) => document.body.classList.add(classPart));
-
-        return () => {
-            centeringClass
-                .split(" ")
-                .forEach((classPart) =>
-                    document.body.classList.remove(classPart)
-                );
-        };
-    }, []);
-
-    const service = new CustomerService();
-
-    const [form, setForm] = useState<{ username: string; password: string }>({
+    const [form, setForm] = useState<Form>({
         username: "",
         password: "",
     });
 
+    useEffect(() => {
+        if (checkPerson()) {
+            navigate("/account");
+        }
+
+        const cleanup = enforceLoginFormToCenter();
+
+        return () => cleanup();
+    }, []);
+
     // TODO: do error handling
     const login = async (): Promise<void> => {
         if ((form.password || form.username).length == 0) {
-            return console.log("empty credentials");
+            return setIsError(true);
         }
 
-        const response: AxiosResponse<Customer, any> = await service.login(
-            form.username,
-            form.password
-        );
+        PersonService.login(form.username, form.password).then((response) => {
+            if ("errorMessage" in response) {
+                return setIsError(true);
+            }
 
-        if (response.status !== 200) {
-            return alert("Login failure");
-        }
+            localStorage.setItem("user", JSON.stringify(response.data));
 
-        localStorage.setItem("user", JSON.stringify(response.data));
-
-        navigate("/account");
+            navigate("/account");
+        });
     };
+
+    const handleOnUsernameInputChange = (
+        event: ChangeEvent<HTMLInputElement>,
+        key: keyof Form
+    ): void => setForm({ ...form, [key]: event.target.value.trim() });
 
     return (
         <main className="form-signin w-100 m-auto">
             <form>
                 <h1 className="h3 mb-3 fw-normal">Вход</h1>
+                <NavLink to="/">Главная</NavLink>
 
                 <div className="form-floating">
-                    <input
-                        type="username"
+                    <UIInput
                         onChange={(event) =>
-                            setForm({ ...form, username: event.target.value })
+                            handleOnUsernameInputChange(event, "username")
                         }
-                        className="form-control"
                         id="floatingInput"
                         placeholder="Имя пользователя"
+                        isError={isError}
+                        additionalClassName="mb-2"
                     />
                     <label htmlFor="floatingInput">Имя пользователя</label>
                 </div>
                 <div className="form-floating">
-                    <input
+                    <UIInput
                         type="password"
                         onChange={(event) =>
-                            setForm({ ...form, password: event.target.value })
+                            handleOnUsernameInputChange(event, "password")
                         }
-                        className="form-control mt-2"
+                        isError={isError}
                         id="floatingPassword"
-                        placeholder="Password"
+                        placeholder="Пароль"
                     />
                     <label htmlFor="floatingPassword">Пароль</label>
                 </div>
@@ -90,7 +84,7 @@ export default function Login() {
                 <button
                     onClick={login}
                     className="btn btn-primary w-100 py-2 mt-4"
-                    type="submit"
+                    type="button"
                 >
                     Войти
                 </button>

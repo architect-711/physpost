@@ -3,13 +3,12 @@ import "froala-editor/css/froala_style.min.css";
 import "froala-editor/js/plugins.pkgd.min.js";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Footer from "../components/Footer";
-import Head from "../components/Head";
+import Footer from "../components/common/Footer";
+import Head from "../components/common/Head";
 import { Article } from "../data/typing";
 import ArticleService from "../services/ArticleService";
 
 export default function ArticlePage() {
-    const service = new ArticleService();
     const [article, setArticle] = useState<Article | null>(null);
     const { id } = useParams();
 
@@ -17,10 +16,9 @@ export default function ArticlePage() {
         if (!id) {
             return alert("Что-то пошло не так(");
         }
-        service
-            .getArticleById(Number(id))
-            .then((response) => setArticle(response.data))
-            .catch((error) => alert(`Ошибка!\nПричина: ${error.message}`));
+        ArticleService.getArticleById(Number(id)).then((response) =>
+            setArticle("errorMessage" in response ? null : response.data)
+        );
     }, []);
 
     return (

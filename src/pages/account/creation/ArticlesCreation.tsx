@@ -3,7 +3,7 @@ import "froala-editor/css/froala_style.min.css";
 import "froala-editor/js/plugins.pkgd.min.js";
 import { Dispatch, SetStateAction } from "react";
 import FroalaEditor from "react-froala-wysiwyg";
-import froalaConfig from "../../../data/config/froalaConfig";
+import froalaConfig from "../../../data/froalaConfig";
 import { CreationArticle } from "../../../data/typing";
 import FilesSaver from "./filesSrcChanger";
 

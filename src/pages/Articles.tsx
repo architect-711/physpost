@@ -1,18 +1,23 @@
 import { useState } from "react";
-import ArticlesMapper from "../components/ArticlesMapper";
-import Footer from "../components/Footer";
-import Head from "../components/Head";
-import { Article } from "../data/typing";
-import useService from "../hooks/useService";
+import { ArticlesFallback } from "../components/article/ArticlesFallback";
+import Footer from "../components/common/Footer";
+import Head from "../components/common/Head";
+import { Article, CustomError } from "../data/typing";
+import { useService, useServiceEffect } from "../hooks/useService";
 import ArticleService from "../services/ArticleService";
 
 export default function Articles() {
-    const service = new ArticleService();
+    const [error, setError] = useState<CustomError>({
+        isError: false,
+        message: "",
+    });
     const [articles, setArticles] = useState<Article[] | null>(null);
     const [inputValue, setInputValue] = useState<string>();
 
-    useService(service.getLastWithLimit(9), (articles) =>
-        setArticles(articles)
+    useServiceEffect<Article[]>(
+        ArticleService.getLastWithLimit(9),
+        (response) => setArticles(response.data),
+        (error) => setError({ isError: true, message: error.message })
     );
 
     const findByTitle = (): void => {
@@ -20,9 +25,11 @@ export default function Articles() {
             return window.location.reload();
         }
 
-        service
-            .getArticlesWithTitleMatch(inputValue)
-            .then((response) => setArticles(response.data));
+        useService(
+            ArticleService.getArticlesWithTitleMatch(inputValue),
+            (response) => setArticles(response.data),
+            (error) => setError({ isError: true, message: error.message })
+        );
     };
 
     return (
@@ -35,6 +42,7 @@ export default function Articles() {
                         placeholder="Найти статью по названию"
                         className="form-control"
                         onChange={(event) => setInputValue(event.target.value)}
+                        value={inputValue}
                         style={{ width: "70%" }}
                     />
                     <button
@@ -46,7 +54,10 @@ export default function Articles() {
                 </section>
             </div>
 
-            <ArticlesMapper articles={articles} heading="Последние статьи" />
+            <ArticlesFallback
+                error={error}
+                articles={{ articles, heading: "Последние статьи" }}
+            />
 
             <Footer />
         </main>

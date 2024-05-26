@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import CustomerService from "../../services/CustomerService";
+import CustomerService from "../../services/PersonService";
 
 export default function DeleteAccount() {
     const service = new CustomerService();

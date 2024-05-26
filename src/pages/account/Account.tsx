@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Footer from "../../components/Footer";
-import Head from "../../components/Head";
-import { Customer } from "../../data/typing";
-import customerChecker from "../../utils/customerChecker";
+import Footer from "../../components/common/Footer";
+import Head from "../../components/common/Head";
+import { Person } from "../../data/typing";
+import { checkPerson } from "../../utils/personChecker";
 import AccountInfo from "./AccountInfo";
 import DeleteAccount from "./DeleteAccount";
 import AccountArticles from "./creation/AccountArticles";
@@ -18,11 +18,11 @@ interface Mode {
 export default function Account() {
     const navigate = useNavigate();
     const storageCustomer: string | null = localStorage.getItem("user");
-    const customer: Customer | null =
+    const customer: Person | null =
         storageCustomer !== null ? JSON.parse(storageCustomer) : null;
 
     useEffect(() => {
-        if (!customerChecker() || customer == null) {
+        if (!checkPerson() || customer == null) {
             navigate("/login");
         }
     }, [customer]);

@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import About from "./pages/About";
 import ArticlePage from "./pages/ArticlePage";
 import Articles from "./pages/Articles";
@@ -8,13 +7,13 @@ import Account from "./pages/account/Account";
 import Home from "./pages/home/Home";
 
 export default function ApplicationRoutesContainer() {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    useEffect(() => {
-        if (localStorage.getItem("user") == null) {
-            navigate("/");
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (localStorage.getItem("user") == null) {
+    //         navigate("/");
+    //     }
+    // }, []);
 
     return (
         <Routes>

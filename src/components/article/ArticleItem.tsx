@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Article } from "../data/typing";
+import { Article } from "../../data/typing";
 
 export default function ArticleItem({ article }: { article: Article }) {
     const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
-import Footer from "../components/Footer";
-import Head from "../components/Head";
+import Footer from "../components/common/Footer";
+import Head from "../components/common/Head";
 
 export default function About() {
     return (

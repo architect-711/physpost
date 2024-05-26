@@ -1,34 +1,38 @@
-import { AxiosResponse } from "axios";
-import articleApiConfig from "../data/config/articlesApiConfig";
-import { Article, ArticleApiEndpoints, CreationArticle } from "../data/typing";
-import request from "../lib/request";
+import { articleAPI } from "../data/api";
+import { Article, CreationArticle, Response } from "../data/typing";
+import { Service } from "./Service";
 
-type Response<T> = Promise<AxiosResponse<T>>;
-
-export default class ArticleService {
-    private readonly root: string = articleApiConfig.rootURL;
-    private readonly endpoints: ArticleApiEndpoints =
-        articleApiConfig.endpoints;
-
-    public async getLastWithLimit(limit: number): Response<Article[]> {
-        return request<Article[]>(
-            "GET",
-            this.root + this.endpoints.getLastWithLimit + limit
-        );
+export default class ArticleService extends Service {
+    public static async getLastWithLimit(limit: number): Response<Article[]> {
+        return await this.send<Article[]>({
+            method: "GET",
+            url: articleAPI.buildURL(articleAPI.get.getLastWithLimit + limit),
+        });
     }
 
-    public async getArticlesWithTitleMatch(title: string): Response<Article[]> {
-        return request(
-            "GET",
-            this.root + this.endpoints.getArticlesWithTitleMatch + title
-        );
+    public static async getArticlesWithTitleMatch(
+        title: string
+    ): Response<Article[]> {
+        return await this.send<Article[]>({
+            method: "GET",
+            url: articleAPI.buildURL(articleAPI.get.getWithTitleMatch + title),
+        });
     }
 
-    public async postArticle(article: CreationArticle): Response<Article> {
-        return request("POST", this.root + this.endpoints.post, article);
+    public static async postArticle(
+        article: CreationArticle
+    ): Response<Article> {
+        return await this.send<Article>({
+            method: "POST",
+            url: articleAPI.buildURL(articleAPI.post.postOne),
+            data: article,
+        });
     }
 
-    public async getArticleById(id: number): Response<Article> {
-        return request("GET", this.root + this.endpoints.getById + id);
+    public static async getArticleById(id: number): Response<Article> {
+        return await this.send<Article>({
+            method: "GET",
+            url: articleAPI.buildURL(articleAPI.get.getOneById + id),
+        });
     }
 }
