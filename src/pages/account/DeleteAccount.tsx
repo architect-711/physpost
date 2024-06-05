@@ -1,24 +1,13 @@
 import { useNavigate } from "react-router-dom";
-import CustomerService from "../../services/PersonService";
+import PersonService from "../../services/PersonService";
 
 export default function DeleteAccount() {
-    const service = new CustomerService();
+    const service = new PersonService();
     const navigate = useNavigate();
     const customer = JSON.parse(localStorage.getItem("user")!);
 
     const deleteAccount = () => {
-        service
-            .deleteAccountById(customer.id)
-            .then((response) => {
-                if (response.status !== 200) {
-                    alert("Ошибка удаления\n");
-                }
-                localStorage.removeItem("user");
-                navigate("/");
-            })
-            .catch((error) =>
-                alert(`Ошибка удаления\nПричина: ${error.message}`)
-            );
+        // TODO 
     };
 
     return (

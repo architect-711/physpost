@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { ArticlesFallback } from "../components/article/ArticlesFallback";
-import Footer from "../components/common/Footer";
 import Head from "../components/common/Head";
 import { app } from "../data/app";
 import { Article, CustomError } from "../data/typing";

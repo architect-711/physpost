@@ -3,10 +3,10 @@ import "froala-editor/css/froala_style.min.css";
 import "froala-editor/js/plugins.pkgd.min.js";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import styles from '../assets/css/article.module.css';
 import Head from "../components/common/Head";
 import { Article } from "../data/typing";
 import ArticleService from "../services/ArticleService";
-import styles from '../assets/css/article.module.css'
 
 export default function ArticlePage() {
     const [article, setArticle] = useState<Article | null>(null);

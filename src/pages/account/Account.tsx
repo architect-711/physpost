@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Footer from "../../components/common/Footer";
 import Head from "../../components/common/Head";
 import { Person } from "../../data/typing";
 import { checkPerson } from "../../utils/personChecker";

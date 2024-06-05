@@ -1,7 +1,7 @@
-import { Customer } from "../../data/typing";
+import { Person } from "../../data/typing";
 
 const AccountInfo = () => {
-    const customer: Customer = JSON.parse(localStorage.getItem("user")!);
+    const customer: Person= JSON.parse(localStorage.getItem("user")!);
 
     return (
         <div className="d-flex flex-column flex-md-row p-4 gap-4 py-md-5 align-items-center justify-content-center">
