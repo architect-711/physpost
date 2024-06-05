@@ -7,18 +7,28 @@ interface Props {
         articles: Article[] | null;
         heading: string;
     };
+    deleteArticleById: (id: number) => void;
 }
 
-export const ArticlesFallback = ({ error, articles }: Props) => {
+export const ArticlesFallback = ({
+    error,
+    articles,
+    deleteArticleById,
+}: Props) => {
     return (
         <>
-            {!error.isError ? (
+            {
+                !error.isError &&
+                articles !== null &&
+                articles.articles?.length 
+            ? (
                 <ArticlesMapper
                     articles={articles.articles}
+                    deleteArticleById={deleteArticleById}
                     heading={articles.heading}
                 />
             ) : (
-                <p style={{ textAlign: "center" }}>An error happened</p>
+                <p style={{ textAlign: "center" }}>{ error.message || "Нет статей" }</p>
             )}
         </>
     );

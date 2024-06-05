@@ -1,13 +1,17 @@
 import { Article } from "../../data/typing";
 import ArticleItem from "./ArticleItem";
 
+interface Props {
+    articles: Article[];
+    heading: string | undefined;
+    deleteArticleById: (id: number) => void;
+}
+
 export default function ArticlesMapper({
     articles,
     heading,
-}: {
-    articles: Article[] | null;
-    heading: string | undefined;
-}) {
+    deleteArticleById,
+}: Props) {
     return (
         <div className="album py-5 bg-body-tertiary">
             <div className="container">
@@ -29,7 +33,11 @@ export default function ArticlesMapper({
                         </button>
                     ) : (
                         articles.map((article) => (
-                            <ArticleItem article={article} key={article.id} />
+                            <ArticleItem
+                                article={article}
+                                deleteArticleById={deleteArticleById}
+                                key={article.id}
+                            />
                         ))
                     )}
                 </div>

@@ -1,0 +1,12 @@
+.article_container p {
+    font-size: 18px;
+}
+
+.article_container {
+    margin-top: 6px;
+}
+
+.header {
+    font-size: 44px;
+    font-weight: 900;
+}

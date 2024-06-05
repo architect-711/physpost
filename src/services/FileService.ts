@@ -18,4 +18,13 @@ export default class FilesService extends Service {
             ),
         });
     }
+
+    public static async saveOne(file: FormData): Response<File> {
+        return await this.send({
+            method: "POST",
+            url: filesAPI.buildURL(filesAPI.post.postOneDev),
+            data: file,
+            // postContentType: "multipart/form-data",
+        });
+    }
 }

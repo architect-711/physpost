@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ArticlesFallback } from "../components/article/ArticlesFallback";
 import Footer from "../components/common/Footer";
 import Head from "../components/common/Head";
+import { app } from "../data/app";
 import { Article, CustomError } from "../data/typing";
 import { useService, useServiceEffect } from "../hooks/useService";
 import ArticleService from "../services/ArticleService";
@@ -12,24 +13,22 @@ export default function Articles() {
         message: "",
     });
     const [articles, setArticles] = useState<Article[] | null>(null);
-    const [inputValue, setInputValue] = useState<string>();
+    const [inputValue, setInputValue] = useState<string>("");
 
-    useServiceEffect<Article[]>(
-        ArticleService.getLastWithLimit(9),
-        (response) => setArticles(response.data),
-        (error) => setError({ isError: true, message: error.message })
-    );
+    useServiceEffect<Article[]>({
+        promise: () => ArticleService.getLastWithLimit(app.home_articles_request_number),
+        successCallback: (response) => setArticles(response.data),
+        errorCallback: (error) => setError({ isError: true, message: error.errorMessage })
+    });
 
     const findByTitle = (): void => {
-        if (typeof inputValue == "undefined" || !inputValue.length) {
-            return window.location.reload();
-        }
+        if (!inputValue.length) return window.location.reload();
 
-        useService(
-            ArticleService.getArticlesWithTitleMatch(inputValue),
-            (response) => setArticles(response.data),
-            (error) => setError({ isError: true, message: error.message })
-        );
+        useService({
+            promise: () => ArticleService.getArticlesWithTitleMatch(inputValue),
+            successCallback: (response) => setArticles(response.data),
+            errorCallback: (error) => setError({ isError: true, message: error.errorMessage })
+        });
     };
 
     return (
@@ -57,9 +56,9 @@ export default function Articles() {
             <ArticlesFallback
                 error={error}
                 articles={{ articles, heading: "Последние статьи" }}
+                deleteArticleById={() => {}}
             />
 
-            <Footer />
         </main>
     );
 }

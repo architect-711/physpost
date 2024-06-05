@@ -4,4 +4,5 @@ export const app = {
         host: "http://localhost:8080",
         root: "/v1/api",
     },
+    home_articles_request_number: 9,
 };

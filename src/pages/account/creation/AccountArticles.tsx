@@ -11,10 +11,11 @@ const defaultArticleConfig: CreationArticle = {
 };
 
 export default function AccountArticles() {
-    const [article, setArticle] =
-        useState<CreationArticle>(defaultArticleConfig);
+    const [article, setArticle] = useState<CreationArticle>(defaultArticleConfig);
 
     const onSave = (newArticle: CreationArticle): void => {
+        console.log('worked');
+        
         const errorCondition: boolean =
             newArticle.body.length <= 0 &&
             newArticle.title.length <= 0 &&

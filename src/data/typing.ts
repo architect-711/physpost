@@ -85,6 +85,11 @@ export interface FilesEndpoints {
 
 export type Endpoints = PersonEndpoints | ArticleEndpoints | FilesEndpoints;
 
+export interface ArticlesContextType {
+    articles: Article[];
+    setArticles: (articles: Article[]) => void;
+}
+
 export interface RequestParameters {
     method: RequestMethods;
     url: string;

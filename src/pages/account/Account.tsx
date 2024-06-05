@@ -89,7 +89,6 @@ export default function Account() {
 
                 {modes.find((mode) => mode.isActive === true)!.component}
             </div>
-            <Footer />
         </main>
     );
 }

@@ -35,4 +35,14 @@ export default class ArticleService extends Service {
             url: articleAPI.buildURL(articleAPI.get.getOneById + id),
         });
     }
+
+    public static async deleteArticleById(id: number): Response<Article> {
+        if (localStorage.getItem("user") === null) {
+            return { errorMessage: "User doesn't exit" };
+        }
+        return await this.send({
+            method: "DELETE",
+            url: articleAPI.buildURL(articleAPI.delete.deleteOne + id),
+        });
+    }
 }

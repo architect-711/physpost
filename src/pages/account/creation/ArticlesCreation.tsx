@@ -18,20 +18,32 @@ const ArticleCreation = ({
 }) => {
     const filesSaver = new FilesSaver();
 
-    const insertContent = (): void => {
-        filesSaver.saveFiles();
+    const insertContent = async (): Promise<void> => {
+        try {
+            await filesSaver.saveFiles().catch((error) => {
+                throw new Error(error);
+            });
 
-        const froalaEditor: Element | null = document.querySelector(
-            ".fr-element.fr-view"
-        );
-        if (!froalaEditor) {
-            return alert(`Редактор не найден?`);
+            console.log("saved files");
+
+            const froalaEditor: Element | null = document.querySelector(
+                ".fr-element.fr-view"
+            );
+            if (!froalaEditor) {
+                return alert(`Редактор не найден?`);
+            }
+            const content: string = froalaEditor.innerHTML;
+            const newArticle: CreationArticle = { ...article, body: content };
+
+            setArticle({ ...article, body: content });
+            onSave(newArticle);
+        } catch (error: unknown) {
+            if (error === Error && "errorMessage" in error) {
+                return alert("Error. " + error.errorMessage);
+            }
+            // @ts-ignore
+            console.error('message' in error ? error.message : 'Unknown error');
         }
-        const content: string = froalaEditor.innerHTML;
-        const newArticle: CreationArticle = { ...article, body: content };
-
-        setArticle({ ...article, body: content });
-        onSave(newArticle);
     };
 
     return (

@@ -45,6 +45,7 @@ export const filesAPI = {
     },
     post: {
         postOne: "/post/save_one",
+        postOneDev: "/post/save_one_dev",
     },
     delete: {
         deleteOneById: "/delete/",

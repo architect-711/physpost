@@ -1,21 +1,22 @@
+import { filesAPI } from "../../../data/api";
 import { File } from "../../../data/typing";
-
-const FILES_SAVE_URL = "http://localhost:8080/v1/api/file/post/save_one";
-const FILE_GET_PATH = "http://localhost:8080/v1/api/file/get";
+import FilesService from "../../../services/FileService";
 
 export default class FilesSaver {
-    private readonly host: string = "blob:http://localhost:5173";
+    private readonly BLOB_HOST: string = "blob:http://localhost:5173";
     private images: HTMLImageElement[] = [];
 
-    public saveFiles(): void {
+    public async saveFiles(): Promise<void> {
         const names: string[] = this.getBlobNames();
 
         if (names.length == 0) {
-            return console.error("Internal error. No images.");
+            return; 
         }
 
-        names.forEach((name) => {
-            this.extractBlobFile(name).then((file) => this.send(file, name));
+        names.forEach(async (name) => {
+            await this.extractBlobFile(name).then((file) =>
+                this.send(file, name)
+            );
         });
     }
 
@@ -24,11 +25,8 @@ export default class FilesSaver {
         this.images = Array.from(document.querySelectorAll(".fr-fic"));
 
         this.images.forEach((image) => {
-            if (
-                !image.hasAttribute("data-url") &&
-                "src" in image &&
-                typeof image.src == "string"
-            ) {
+            if ("src" in image && image.src.startsWith("blob")) {
+                // the last (3) is the name
                 filesNames.push(image.src.split("/")[3]);
             }
         });
@@ -37,29 +35,43 @@ export default class FilesSaver {
     }
 
     private async extractBlobFile(name: string): Promise<Blob> {
-        return await fetch(`${this.host}/${name}`).then((response) =>
-            response.blob()
-        );
+        return await (await fetch(new URL(`${this.BLOB_HOST}/${name}`))).blob();
     }
 
     private send(file: Blob, name: string): void {
-        fetch(FILES_SAVE_URL, {
-            body: this.makePayload(file, name),
-            method: "POST",
-        })
-            .then((response) => response.json())
-            .then((response) => this.assignRemoteURL(response, name))
-            .catch((error) => alert(`Ошибка!\nПричина: ${error.message}`));
+        FilesService.saveOne(this.makePayload(file, name))
+            .then((response) => {
+                if ("errorMessage" in response) {
+                    throw new Error(
+                        "Something went wrong. Message: " +
+                            response.errorMessage
+                    );
+                }
+                this.assignRemoteURL(response.data, name);
+            })
+            .catch((error) => {
+                throw new Error(error.message);
+            });
+
+        // fetch(FILES_SAVE_URL, {
+        //     body: this.makePayload(file, name),
+        //     method: "POST",
+        // })
+        //     .then((response) => response.json())
+        //     .then((response) => this.assignRemoteURL(response, name))
+        //     .catch((error) => alert(`Ошибка!\nПричина: ${error.message}`));
     }
 
     private makePayload(file: Blob, name: string): FormData {
         const formData = new FormData();
 
         // there were just numbers before, can't make build if error so I change to strings
-        formData.append("articleId", "1");
-        formData.append("authorId", "1");
-        formData.append("name", name);
+        // formData.append("authorId", "1");
+        // formData.append("articleId", "1");
+        // formData.append("name", name);
         formData.append("file", file);
+
+        console.log(formData.get("file"));
 
         return formData;
     }
@@ -71,7 +83,9 @@ export default class FilesSaver {
 
         this.images.forEach((image) =>
             image.src.split("/")[3] == name
-                ? (image.src = `${FILE_GET_PATH}/${response.id}/content`)
+                ? (image.src = `${filesAPI.buildURL(
+                      filesAPI.get.getContentById
+                  )}/${response.id}/content`)
                 : ""
         );
     }
