@@ -1,48 +1,106 @@
-export type CreationArticle = Omit<Article, 'id' | 'dateCreated'>;
+import { AxiosResponse } from "axios";
+import { ChangeEventHandler, HTMLInputTypeAttribute } from "react";
 
-export interface API<T> {
-	rootURL: RootURL;
-	endpoints: T;
-}
+export type CreationArticle = Omit<Article, "id" | "dateCreated">;
 
 export interface Article {
-	id: number;
-	authorId: number;
-	title: string;
-	description: string;
-	body: string;
-	dateCreated: string;
+    id: number;
+    authorId: number;
+    title: string;
+    description: string;
+    body: string;
+    dateCreated: string;
 }
 
-export interface ArticleApiEndpoints {
-	getById: string;
-	getLastWithLimit: string;
-	getArticlesWithTitleMatch: string;
-	post: string;
-	delete: string;
+export interface Person {
+    id: number;
+    username: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    postsIds: number[];
+    role: string;
 }
 
-export interface Customer {
-	id: number;
-	username: string;
-	password: string;
-	firstName: string;
-	lastName: string;
-	postsIds: number[];
-	role: string;
+export type RequestMethods = "GET" | "POST" | "DELETE" | "PUT";
+
+export type Response<T> = Promise<RequestFallback | AxiosResponse<T>>;
+
+export interface UIInputProps {
+    type?: HTMLInputTypeAttribute;
+    className?: string;
+    id?: string;
+    placeholder?: string;
+    isError: boolean;
+    onChange?: ChangeEventHandler<HTMLInputElement>;
+    [key: string]: unknown;
 }
 
-export interface CustomerAPIEndpoints {
-	getById: string;
-	getByUsername: string;
-	login: string;
-	post: string;
-	deleteById: string;
+export interface RequestFallback {
+    errorMessage: string;
 }
 
-export type RequestMethods = 'GET' | 'POST' | 'DELETE' | 'PUT';
+export interface CustomError {
+    isError: boolean;
+    message: string;
+}
 
-export type RootURL =
-	| 'http://localhost:8080/v1/files'
-	| 'http://localhost:8082/v1/customer'
-	| 'http://localhost:8081/v1/articles';
+export interface PersonEndpoints {
+    get: {
+        getOneById: string;
+        getOneByUsername: string;
+        getOneByUsernameAndPassword: string;
+    };
+    post: {
+        postOne: string;
+    };
+}
+
+export interface ArticleEndpoints {
+    get: {
+        getOneById: string;
+        getLastWithLimit: string;
+        getWithTitleMatch: string;
+    };
+    post: {
+        postOne: string;
+    };
+    delete: {
+        deleteOne: string;
+    };
+}
+
+export interface FilesEndpoints {
+    get: {
+        getOneById: string;
+        getContentById: string;
+    };
+    post: {
+        postOne: string;
+    };
+    delete: {
+        deleteOneById: string;
+    };
+}
+
+export type Endpoints = PersonEndpoints | ArticleEndpoints | FilesEndpoints;
+
+export interface ArticlesContextType {
+    articles: Article[];
+    setArticles: (articles: Article[]) => void;
+}
+
+export interface RequestParameters {
+    method: RequestMethods;
+    url: string;
+    data?: unknown;
+    postContentType?: string;
+}
+
+export interface File {
+    id: number;
+    articleId: number;
+    authorId: number;
+    name: string;
+    content: string;
+}

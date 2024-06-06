@@ -1,25 +1,27 @@
-import { AxiosResponse } from 'axios';
-import { useEffect } from 'react';
+import { AxiosResponse } from "axios";
+import { useEffect } from "react";
+import { RequestFallback, Response } from "../data/typing";
 
-export default function useService<T>(
-	fn: Promise<AxiosResponse<T, unknown>>,
-	callBack: (datum: T) => void
-): void {
-	useEffect(
-		() => {
-			if (typeof fn === 'undefined' || fn === null) {
-				return;
-			}
+interface UseService<T> {
+    promise: () => Response<T> | undefined, 
+    successCallback: (response: AxiosResponse<T>) => void, 
+    errorCallback: (response: RequestFallback) => void
+}
 
-			const getResponse = (): Promise<T> =>
-				fn.then(response => response.data);
+export function useService<T>({ promise, successCallback, errorCallback }: UseService<T>): void {
+    const promiseResult = promise();
+    
+    if (typeof promiseResult === "undefined") return;
 
-			const unwrapPromise = async (): Promise<void> => {
-				callBack(await getResponse());
-			};
+    promiseResult.then((response) => {
+        if ("errorMessage" in response) throw new Error(response.errorMessage);
+    
+        successCallback(response);  
+    }).catch(errorCallback);
+}
 
-			unwrapPromise();
-		},
-		[] /* DO NOT REMOVE EMPTY ARRAY OR GET INFINITY LOOP OF REQUESTS*/
-	);
+export function useServiceEffect<T>({ promise, successCallback, errorCallback }: UseService<T>): void {
+    useEffect(() => {
+        useService<T>({ promise, successCallback, errorCallback });
+    }, []);
 }

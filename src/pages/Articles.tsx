@@ -1,52 +1,63 @@
-import { useState } from 'react';
-import ArticlesMapper from '../components/ArticlesMapper';
-import Footer from '../components/Footer';
-import Head from '../components/Head';
-import { Article } from '../data/typing';
-import useService from '../hooks/useService';
-import ArticleService from '../services/ArticleService';
+import { useState } from "react";
+import { ArticlesFallback } from "../components/article/ArticlesFallback";
+import Head from "../components/common/Head";
+import { app } from "../data/app";
+import { Article, CustomError } from "../data/typing";
+import { useService, useServiceEffect } from "../hooks/useService";
+import ArticleService from "../services/ArticleService";
 
 export default function Articles() {
-	const service = new ArticleService();
-	const [articles, setArticles] = useState<Article[] | null>(null);
-	const [inputValue, setInputValue] = useState<string>();
+    const [error, setError] = useState<CustomError>({
+        isError: false,
+        message: "",
+    });
+    const [articles, setArticles] = useState<Article[] | null>(null);
+    const [inputValue, setInputValue] = useState<string>("");
 
-	useService(service.getLastWithLimit(9), articles => setArticles(articles));
+    useServiceEffect<Article[]>({
+        promise: () => ArticleService.getLastWithLimit(app.home_articles_request_number),
+        successCallback: (response) => setArticles(response.data),
+        errorCallback: (error) => setError({ isError: true, message: error.errorMessage })
+    });
 
-	const findByTitle = (): void => {
-		if (typeof inputValue == 'undefined' || !inputValue.length) {
-			return window.location.reload();
-		}
+    const findByTitle = (): void => {
+        if (!inputValue.length) return window.location.reload();
 
-		service
-			.getArticlesWithTitleMatch(inputValue)
-			.then(response => setArticles(response.data));
-	};
+        useService({
+            promise: () => ArticleService.getArticlesWithTitleMatch(inputValue),
+            successCallback: (response) => setArticles(response.data),
+            errorCallback: (error) => setError({ isError: true, message: error.errorMessage })
+        });
+    };
 
-	return (
-		<main>
-			<Head />
+    return (
+        <main>
+            <Head />
 
-			<div className='container'>
-				<section className='search d-flex justify-content-between pb-4'>
-					<input
-						placeholder='Найти статью по названию'
-						className='form-control'
-						onChange={event => setInputValue(event.target.value)}
-						style={{ width: '70%' }}
-					/>
-					<button
-						className='w-25 btn btn-primary btn-lg'
-						onClick={findByTitle}
-					>
-						Найти
-					</button>
-				</section>
-			</div>
+            <div className="container">
+                <section className="search d-flex justify-content-between pb-4">
+                    <input
+                        placeholder="Найти статью по названию"
+                        className="form-control"
+                        onChange={(event) => setInputValue(event.target.value)}
+                        value={inputValue}
+                        style={{ width: "70%" }}
+                    />
+                    <button
+                        className="w-25 btn btn-primary btn-lg"
+                        onClick={findByTitle}
+                    >
+                        Найти
+                    </button>
+                </section>
+            </div>
 
-			<ArticlesMapper articles={articles} heading='Последние статьи' />
+            <ArticlesFallback
+                error={error}
+                articles={{ articles, heading: "Последние статьи" }}
+                deleteArticleById={() => {}}
+            />
 
-			<Footer />
-		</main>
-	);
+        </main>
+    );
 }

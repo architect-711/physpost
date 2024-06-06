@@ -1,102 +1,95 @@
-import { AxiosResponse } from 'axios';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Customer } from '../data/typing';
-import CustomerService from '../services/CustomerService';
-import customerChecker from '../utils/customerChecker';
+import { ChangeEvent, useEffect, useState } from "react";
+import { Form, NavLink, useNavigate } from "react-router-dom";
+import UIInput from "../components/ui/input/UIInput.module";
+import PersonService from "../services/PersonService";
+import { enforceLoginFormToCenter } from "../utils/enforceLoginFormToCenter";
+import { checkPerson } from "../utils/personChecker";
+
+interface Form {
+    username: string;
+    password: string;
+}
 
 export default function Login() {
-	const navigate = useNavigate();
+    const [isError, setIsError] = useState<boolean>(false);
+    const navigate = useNavigate();
+    const [form, setForm] = useState<Form>({
+        username: "",
+        password: "",
+    });
 
-	useEffect(() => {
-		if (customerChecker()) {
-			navigate('/account');
-		}
+    useEffect(() => {
+        if (checkPerson()) {
+            navigate("/account");
+        }
 
-		// force bootstrap center form
-		const centeringClass =
-			'd-flex align-items-center py-4 bg-body-tertiary justify-content-center';
+        const cleanup = enforceLoginFormToCenter();
 
-		centeringClass
-			.split(' ')
-			.forEach(classPart => document.body.classList.add(classPart));
+        return () => cleanup();
+    }, []);
 
-		return () => {
-			centeringClass
-				.split(' ')
-				.forEach(classPart =>
-					document.body.classList.remove(classPart)
-				);
-		};
-	}, []);
+    // TODO: do error handling
+    const login = async (): Promise<void> => {
+        if ((form.password || form.username).length == 0) {
+            return setIsError(true);
+        }
 
-	const service = new CustomerService();
+        PersonService.login(form.username, form.password).then((response) => {
+            if ("errorMessage" in response) {
+                return setIsError(true);
+            }
 
-	const [form, setForm] = useState<{ username: string; password: string }>({
-		username: '',
-		password: '',
-	});
+            localStorage.setItem("user", JSON.stringify(response.data));
 
-	const login = async (event: Event): Promise<void> => {
-		event.preventDefault();
+            navigate("/account");
+        });
+    };
 
-		if ((form.password || form.username).length == 0) {
-			return console.log('empty credentials');
-		}
+    const handleOnUsernameInputChange = (
+        event: ChangeEvent<HTMLInputElement>,
+        key: keyof Form
+    ): void => setForm({ ...form, [key]: event.target.value.trim() });
 
-		const response: AxiosResponse<Customer, unknown> = await service
-			.login(form.username, form.password)
-			.then(response => response)
-			.catch(error => alert('Ошибка входа\nПричина: ' + error.message));
+    return (
+        <main className="form-signin w-100 m-auto">
+            <form>
+                <h1 className="h3 mb-3 fw-normal">Вход</h1>
+                <NavLink to="/">Главная</NavLink>
 
-		if (response.status !== 200) {
-			return alert('Login failure');
-		}
+                <div className="form-floating">
+                    <UIInput
+                        onChange={(event) =>
+                            handleOnUsernameInputChange(event, "username")
+                        }
+                        id="floatingInput"
+                        placeholder="Имя пользователя"
+                        isError={isError}
+                        additionalClassName="mb-2"
+                    />
+                    <label htmlFor="floatingInput">Имя пользователя</label>
+                </div>
+                <div className="form-floating">
+                    <UIInput
+                        type="password"
+                        onChange={(event) =>
+                            handleOnUsernameInputChange(event, "password")
+                        }
+                        isError={isError}
+                        id="floatingPassword"
+                        placeholder="Пароль"
+                    />
+                    <label htmlFor="floatingPassword">Пароль</label>
+                </div>
 
-		localStorage.setItem('user', JSON.stringify(response.data));
-
-		navigate('/account');
-	};
-
-	return (
-		<main className='form-signin w-100 m-auto'>
-			<form>
-				<h1 className='h3 mb-3 fw-normal'>Вход</h1>
-
-				<div className='form-floating'>
-					<input
-						type='username'
-						onChange={event =>
-							setForm({ ...form, username: event.target.value })
-						}
-						className='form-control'
-						id='floatingInput'
-						placeholder='Имя пользователя'
-					/>
-					<label htmlFor='floatingInput'>Имя пользователя</label>
-				</div>
-				<div className='form-floating'>
-					<input
-						type='password'
-						onChange={event =>
-							setForm({ ...form, password: event.target.value })
-						}
-						className='form-control mt-2'
-						id='floatingPassword'
-						placeholder='Password'
-					/>
-					<label htmlFor='floatingPassword'>Пароль</label>
-				</div>
-
-				<button
-					onClick={login}
-					className='btn btn-primary w-100 py-2 mt-4'
-					type='submit'
-				>
-					Войти
-				</button>
-				<p className='mt-5 mb-3 text-body-secondary'>© 2024</p>
-			</form>
-		</main>
-	);
+                <button
+                    onClick={login}
+                    className="btn btn-primary w-100 py-2 mt-4"
+                    type="button"
+                >
+                    Войти
+                </button>
+                <p className="mt-5 mb-3 text-body-secondary">© 2024</p>
+            </form>
+        </main>
+    );
 }
